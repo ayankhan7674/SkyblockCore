@@ -11,6 +11,7 @@ use pocketmine\math\Vector3;
 use pocketmine\nbt\BigEndianNbtSerializer;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\TreeRoot;
+use pocketmine\network\mcpe\protocol\PlaySoundPacket;
 use pocketmine\network\mcpe\protocol\types\DeviceOS;
 
 class Utils
@@ -179,6 +180,18 @@ class Utils
             }
         }
         return $b_array;
+    }
+
+    public static function playSound(Player $player, string $sound, float $pitch = 1.0, float $volume = 1.0): void
+    {
+        $pk = new PlaySoundPacket();
+        $pk->x = $player->getPosition()->getX();
+        $pk->y = $player->getPosition()->getY();
+        $pk->z = $player->getPosition()->getZ();
+        $pk->volume = $volume;
+        $pk->pitch = $pitch;
+        $pk->soundName = $sound;
+        $player->getNetworkSession()->sendDataPacket($pk);
     }
 
     public static function getPlayerPlatform(Player $player): string
